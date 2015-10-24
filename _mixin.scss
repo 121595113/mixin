@@ -1,0 +1,111 @@
+// 定义animation的keyframes
+@mixin keyframes($name) {
+    @-webkit-keyframes #{$name} {
+        @content;
+    }
+    @keyframes #{$name} {
+        @content;
+    }
+}
+
+//是否支持某个浏览器的前缀，如果你不想支持，可以设置为false
+//----------------------------
+$prefix-for-webkit: true !default;
+$prefix-for-mozilla: true !default;
+$prefix-for-microsoft: true !default;
+$prefix-for-opera: true !default;
+$prefix-for-spec: true !default; // 标准版
+// prefixer
+//----------------------------
+@mixin prefixer ($property, $value, $prefixes) {
+    @each $prefix in $prefixes {
+        @if $prefix==webkit and $prefix-for-webkit==true {
+            -webkit-#{$property}: $value;
+        }
+        @else if $prefix==moz and $prefix-for-mozilla==true {
+            -moz-#{$property}: $value;
+        }
+        @else if $prefix==ms and $prefix-for-microsoft==true {
+            -ms-#{$property}: $value;
+        }
+        @else if $prefix==o and $prefix-for-opera==true {
+            -o-#{$property}: $value;
+        }
+        @else if $prefix==spec and $prefix-for-spec==true {
+            #{$property}: $value;
+        }
+        @else {
+            // @warn "Unrecognized prefix: #{$prefix}";
+        }
+    }
+}
+
+//webkit 和标准
+@mixin transform($property...) {
+    @include prefixer(transform, $property, webkit moz o spec);
+}
+
+//webkit 和标准
+@mixin animation($property...) {
+    @include prefixer(animation, $property, webkit moz o spec);
+}
+
+//四色渐变
+@mixin gradient4($direction, $color_begin, $color_end, $stop_1, $stop_2) {
+    @if $direction==horizontal {
+        background-image: -webkit-gradient(linear, 100% 0%, 0% 0%, from($color_begin), to($color_end), color-stop(nth($stop_1, 1), nth($stop_1, 2)), color-stop(nth($stop_2, 1), nth($stop_2, 2)));
+        background-image: -webkit-linear-gradient(left, 0% $color_begin, percentage(nth($stop_1, 1)) nth($stop_1, 2), percentage(nth($stop_2, 1)) nth($stop_2, 2), 100% $color_end);
+        background-image: linear-gradient(to right, 0% $color_begin, percentage(nth($stop_1, 1)) nth($stop_1, 2), percentage(nth($stop_2, 1)) nth($stop_2, 2), 100% $color_end);
+    }
+    @else if $direction==vertical {
+        background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from($color_begin), to($color_end), color-stop(nth($stop_1, 1), nth($stop_1, 2)), color-stop(nth($stop_2, 1), nth($stop_2, 2)));
+        background-image: -webkit-linear-gradient(top, 0% $color_begin, percentage(nth($stop_1, 1)) nth($stop_1, 2), percentage(nth($stop_2, 1)) nth($stop_2, 2), 100% $color_end);
+        background-image: linear-gradient(to bottom, 0% $color_begin, percentage(nth($stop_1, 1)) nth($stop_1, 2), percentage(nth($stop_2, 1)) nth($stop_2, 2), 100% $color_end);
+    }
+}
+
+//两色线性渐变
+@mixin gradient($dircetion, $color_start, $color_end) {
+    @if $dircetion==vertical {
+        background-image: -webkit-gradient(linear, center top, center bottom, from($color_start), to($color_end));
+        background-image: -webkit-linear-gradient(top, $color_start, $color_end);
+        background-image: -moz-linear-gradient(top, $color_start, $color_end);
+        background-image: -o-linear-gradient(top, $color_start, $color_end);
+        background-image: linear-gradient(to bottom, $color_start, $color_end);
+    }
+    @else if $dircetion==horizontal {
+        background-image: -webkit-gradient(linear, left center, right center, from($color_start), to($color_end));
+        background-image: -webkit-linear-gradient(left, $color_start, $color_end);
+        background-image: -moz-linear-gradient(left, $color_start, $color_end);
+        background-image: -o-linear-gradient(left, $color_start, $color_end);
+        background-image: linear-gradient(to right, $color_start, $color_end);
+    }
+}
+
+// 三角形
+@mixin triangle($direction, $size, $borderColor ) {
+  content:"";
+  height: 0;
+  width: 0;
+
+  @if $direction == top {
+    border-bottom:$size solid $borderColor;
+    border-left:$size dashed transparent;
+    border-right:$size dashed transparent;
+  } 
+  @else if $direction == right {
+    border-left:$size solid $borderColor;
+    border-top:$size dashed transparent;
+    border-bottom:$size dashed transparent;
+  } 
+  @else if $direction == bottom {
+    border-top:$size solid $borderColor;
+    border-left:$size dashed transparent;
+    border-right:$size dashed transparent;
+  } 
+  @else if $direction == left {
+    border-right:$size solid $borderColor;
+    border-top:$size dashed transparent;
+    border-bottom:$size dashed transparent;
+  }
+}
